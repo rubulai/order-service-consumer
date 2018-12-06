@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd
+		http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	
+	<!-- Spring的包扫描：使该包下使用@Service注解的类被纳入Spring的ioc容器管理 -->
+	<context:component-scan base-package="com.bdm.gmall.service.impl"></context:component-scan>
+	<!-- 消费者应用名称 -->
+	<dubbo:application name="order-service-consumer"></dubbo:application>
+
+	<!-- 注册中心地址:向该注册中心订阅服务 -->
+	<dubbo:registry address="zookeeper://127.0.0.1:2181"></dubbo:registry>
+
+	<!-- 订阅服务(声明该接口需调用远程接口,dubbo会为我们生成远程服务代理):这样就可以远程调用userService这个bean(实际上是服务提供者中的userServiceImpl) -->
+	<dubbo:reference stub="com.bdm.gmall.service.impl.UserServiceStub" version="1.0.0" check="false" interface="com.bdm.gmall.service.UserService" id="userService"></dubbo:reference>
+
+	<dubbo:monitor protocol="registry"></dubbo:monitor>
+	<!-- <dubbo:monitor address="127.0.0.1:7070"></dubbo:monitor> -->
+</beans>
